@@ -2,6 +2,7 @@ import React, { Component, useState } from "react";
 import "./../styles/App.css";
 
 // Do not alter the states const and values inside it.
+function App() {
 const states = [
   {
     name: "Madhya Pradesh",
@@ -154,8 +155,43 @@ const states = [
   },
 ];
 
-function App() {
-  return <div id="main"></div>;
+const [selectedState, setSelectedState] = useState(null);
+const [selectedCity, setSelectedCity] = useState(null);
+
+const handleStateClick = (stateIndex) => {
+  setSelectedState(selectedState === stateIndex ? null : stateIndex);
+  setSelectedCity(null); // Reset selected city when state is clicked
+};
+
+const handleCityClick = (cityIndex) => {
+  setSelectedCity(selectedCity === cityIndex ? null : cityIndex);
+};
+
+return (
+  <div id="main">
+    {states.map((state, stateIndex) => (
+      <div key={`state${stateIndex + 1}`} onClick={() => handleStateClick(stateIndex)}>
+        {state.name}
+        {selectedState === stateIndex && (
+          <ul style={{ listStyleType: "circle"}}>
+            {state.cities.map((city, cityIndex) => (
+              <div key={`city${stateIndex + 1}-${cityIndex + 1}`} onClick={(e) => {e.stopPropagation(); handleCityClick(cityIndex)}}>
+                {city.name}
+                {selectedCity === cityIndex && (
+                  <ul style={{ listStyleType: "square"}}>
+                    {city.towns.map((town, townIndex) => (
+                      <li key={`town${stateIndex + 1}-${cityIndex + 1}-${townIndex + 1}`}>{town.name}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </ul>
+        )}
+      </div>
+    ))}
+  </div>
+);
 }
 
 export default App;
